@@ -1,0 +1,36 @@
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://root:12345@localhost:5432/to_do_list?schema=public"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  username String @unique
+  password String
+  Task     Task[]
+
+  @@map("users")
+}
+
+model Task {
+  id          Int          @id @default(autoincrement())
+  author      User         @relation(fields: [userId], references: [id])
+  userId      Int
+  title       String
+  description String
+  status      STATUS_STATE
+  dueDate     DateTime
+
+  @@map("tasks")
+}
+
+enum STATUS_STATE {
+  TODO
+  INPROCESS
+  COMPLETED
+}
